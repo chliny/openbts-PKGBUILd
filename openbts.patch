@@ -1,0 +1,104 @@
+diff -uNr openbts-P2.8.0Opelousas/apps/Makefile.in openbts-P2.8.0Opelousas.new/apps/Makefile.in
+--- openbts-P2.8.0Opelousas/apps/Makefile.in	2011-10-12 16:18:34.000000000 +0800
++++ openbts-P2.8.0Opelousas.new/apps/Makefile.in	2014-01-03 22:28:58.910932617 +0800
+@@ -276,7 +276,7 @@
+ GLOBALS_LA = $(top_builddir)/Globals/libglobals.la
+ CLI_LA = $(top_builddir)/CLI/libcli.la
+ SR_LA = $(top_builddir)/SR/libSR.la
+-SQLITE_LA = $(top_builddir)/sqlite3/libsqlite.la
++SQLITE_LA = $(top_builddir)/sqlite3/libsqlite.la -ldl
+ MOSTLYCLEANFILES = *~
+ AM_CPPFLAGS = $(STD_DEFINES_AND_INCLUDES)
+ AM_CXXFLAGS = -Wall -ldl -pthread
+diff -uNr openbts-P2.8.0Opelousas/apps/OpenBTS.cpp openbts-P2.8.0Opelousas.new/apps/OpenBTS.cpp
+--- openbts-P2.8.0Opelousas/apps/OpenBTS.cpp	2011-10-12 05:58:01.000000000 +0800
++++ openbts-P2.8.0Opelousas.new/apps/OpenBTS.cpp	2014-01-04 14:15:26.624417534 +0800
+@@ -138,7 +138,7 @@
+ 
+ 	gConfig.setUpdateHook(purgeConfig);
+ 	gLogInit("openbts",gConfig.getStr("Log.Level").c_str(),LOG_LOCAL7);
+-	LOG(ALERT) << "OpenBTS starting, ver " << VERSION << " build date " << __DATE__;
++	//LOG(ALERT) << "OpenBTS starting, ver " << VERSION << " build date " << __DATE__;
+ 
+ 	COUT("\n\n" << gOpenBTSWelcome << "\n");
+ 	COUT("\nStarting the system...");
+diff -uNr openbts-P2.8.0Opelousas/CommonLibs/Makefile.in openbts-P2.8.0Opelousas.new/CommonLibs/Makefile.in
+--- openbts-P2.8.0Opelousas/CommonLibs/Makefile.in	2011-10-12 16:18:33.000000000 +0800
++++ openbts-P2.8.0Opelousas.new/CommonLibs/Makefile.in	2014-01-03 22:30:55.907596192 +0800
+@@ -303,7 +303,7 @@
+ GLOBALS_LA = $(top_builddir)/Globals/libglobals.la
+ CLI_LA = $(top_builddir)/CLI/libcli.la
+ SR_LA = $(top_builddir)/SR/libSR.la
+-SQLITE_LA = $(top_builddir)/sqlite3/libsqlite.la
++SQLITE_LA = $(top_builddir)/sqlite3/libsqlite.la -ldl
+ MOSTLYCLEANFILES = *~ testSource testDestination
+ AM_CPPFLAGS = $(STD_DEFINES_AND_INCLUDES)
+ AM_CXXFLAGS = -Wall -ldl -O3 -g -lpthread
+diff -uNr openbts-P2.8.0Opelousas/CommonLibs/SocketsTest.cpp openbts-P2.8.0Opelousas.new/CommonLibs/SocketsTest.cpp
+--- openbts-P2.8.0Opelousas/CommonLibs/SocketsTest.cpp	2011-10-12 05:58:02.000000000 +0800
++++ openbts-P2.8.0Opelousas.new/CommonLibs/SocketsTest.cpp	2014-01-02 22:43:41.541092490 +0800
+@@ -31,6 +31,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
++#include <unistd.h>
+ 
+ static const int gNumToSend = 10;
+ 
+diff -uNr openbts-P2.8.0Opelousas/CommonLibs/Timeval.h openbts-P2.8.0Opelousas.new/CommonLibs/Timeval.h
+--- openbts-P2.8.0Opelousas/CommonLibs/Timeval.h	2011-10-12 09:20:05.000000000 +0800
++++ openbts-P2.8.0Opelousas.new/CommonLibs/Timeval.h	2014-01-02 22:37:46.871101866 +0800
+@@ -29,6 +29,7 @@
+ #include <stdint.h>
+ #include "sys/time.h"
+ #include <iostream>
++#include <unistd.h>
+ 
+ 
+ 
+diff -uNr openbts-P2.8.0Opelousas/SIP/SIPEngine.cpp openbts-P2.8.0Opelousas.new/SIP/SIPEngine.cpp
+--- openbts-P2.8.0Opelousas/SIP/SIPEngine.cpp	2011-10-12 09:19:23.000000000 +0800
++++ openbts-P2.8.0Opelousas.new/SIP/SIPEngine.cpp	2014-01-02 23:53:57.150981028 +0800
+@@ -818,7 +818,7 @@
+ 	get_rtp_params(msg, d_port, d_ip_addr);
+ 	LOG(DEBUG) << "IP="<<d_ip_addr<<" "<<d_port<<" "<<mRTPPort;
+ 
+-	rtp_session_set_local_addr(mSession, "0.0.0.0", mRTPPort );
++	rtp_session_set_local_addr(mSession, "0.0.0.0", mRTPPort, -1);
+ 	rtp_session_set_remote_addr(mSession, d_ip_addr, atoi(d_port));
+ 
+ 	// Check for event support.
+diff -uNr openbts-P2.8.0Opelousas/TransceiverRAD1/DummyLoad.cpp openbts-P2.8.0Opelousas.new/TransceiverRAD1/DummyLoad.cpp
+--- openbts-P2.8.0Opelousas/TransceiverRAD1/DummyLoad.cpp	2011-10-12 05:58:04.000000000 +0800
++++ openbts-P2.8.0Opelousas.new/TransceiverRAD1/DummyLoad.cpp	2014-01-03 00:10:08.890955336 +0800
+@@ -33,6 +33,7 @@
+ #include <stdint.h>
+ #include <string.h>
+ #include <stdlib.h>
++#include <unistd.h>
+ #include "Threads.h"
+ #include "DummyLoad.h"
+ 
+diff -uNr openbts-P2.8.0Opelousas/TransceiverRAD1/Makefile.in openbts-P2.8.0Opelousas.new/TransceiverRAD1/Makefile.in
+--- openbts-P2.8.0Opelousas/TransceiverRAD1/Makefile.in	2011-10-12 16:18:34.000000000 +0800
++++ openbts-P2.8.0Opelousas.new/TransceiverRAD1/Makefile.in	2014-01-03 22:32:33.477593611 +0800
+@@ -300,7 +300,7 @@
+ GLOBALS_LA = $(top_builddir)/Globals/libglobals.la
+ CLI_LA = $(top_builddir)/CLI/libcli.la
+ SR_LA = $(top_builddir)/SR/libSR.la
+-SQLITE_LA = $(top_builddir)/sqlite3/libsqlite.la
++SQLITE_LA = $(top_builddir)/sqlite3/libsqlite.la -ldl
+ MOSTLYCLEANFILES = *~
+ AM_CPPFLAGS = $(STD_DEFINES_AND_INCLUDES) $(USB_INCLUDES) $(WITH_INCLUDES)
+ AM_CXXFLAGS = -DOMNITHREAD_POSIX=1 -lusb-1.0 -ldl -lpthread
+diff -uNr openbts-P2.8.0Opelousas/TransceiverRAD1/rnrad1Core.h openbts-P2.8.0Opelousas.new/TransceiverRAD1/rnrad1Core.h
+--- openbts-P2.8.0Opelousas/TransceiverRAD1/rnrad1Core.h	2011-10-12 09:20:48.000000000 +0800
++++ openbts-P2.8.0Opelousas.new/TransceiverRAD1/rnrad1Core.h	2014-01-03 00:03:58.787631788 +0800
+@@ -40,6 +40,7 @@
+ #include <string.h>
+ #include <cstdio>
+ #include <stdlib.h>
++#include <unistd.h>
+ 
+ #include "Logger.h"
+ 
