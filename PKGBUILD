@@ -34,6 +34,6 @@ package() {
     install -Dm644 ./apps/OpenBTS.example.sql "${pkgdir}/usr/share/OpenBTS/OpenBTS.example.sql"
     mkdir -p "${pkgdir}/usr/share/OpenBTS/Asterisk/" 
     install -Dm644 ./AsteriskConfig/*.conf "${pkgdir}/usr/share/OpenBTS/Asterisk/" 
-    install -Dm644 ./apps/OpenBTS.db "${pkgdir}/etc/OpenBTS/OpenBTS.db"
+    install -Dm766 ./apps/OpenBTS.db "${pkgdir}/etc/OpenBTS/OpenBTS.db"
 }
 
