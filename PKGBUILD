@@ -25,6 +25,8 @@ build() {
     autoconf -i
     ./configure
     make
+    [ -f ./apps/OpenBTS.db ] && rm -f ./apps/OpenBTS.db
+    echo ".exit" | sqlite3 -init ./apps/OpenBTS.example.sql ./apps/OpenBTS.db
 }
 
 package() {
@@ -33,5 +35,6 @@ package() {
     install -Dm644 ./apps/OpenBTS.example.sql "${pkgdir}/usr/share/OpenBTS/OpenBTS.example.sql"
     mkdir -p "${pkgdir}/usr/share/OpenBTS/Asterisk/" 
     install -Dm644 ./AsteriskConfig/*.conf "${pkgdir}/usr/share/OpenBTS/Asterisk/" 
+    install -Dm644 ./apps/OpenBTS.db "${pkgdir}/etc/OpenBTS/OpenBTS.db"
 }
 
