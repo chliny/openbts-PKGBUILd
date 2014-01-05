@@ -31,7 +31,7 @@ package() {
     cd "${srcdir}/${pkgname}-P${pkgver}Opelousas"
     install -Dm755 ./apps/OpenBTS "${pkgdir}/usr/bin/OpenBTS"
     install -Dm644 ./apps/OpenBTS.example.sql "${pkgdir}/usr/share/OpenBTS/OpenBTS.example.sql"
-    install -dm644 "${pkgdir}/usr/share/OpenBTS/Asterisk/" 
+    mkdir -p "${pkgdir}/usr/share/OpenBTS/Asterisk/" 
     install -Dm644 ./AsteriskConfig/*.conf "${pkgdir}/usr/share/OpenBTS/Asterisk/" 
 }
 
