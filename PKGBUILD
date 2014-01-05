@@ -7,8 +7,7 @@ pkgdesc="GSM L1-L3 stack with SIP network interfaces"
 arch=('i686' 'x86_64')
 url="http://openbts.org/"
 license=('GPL' 'AGPL')
-depends=('libtool' 'libosip2' 'ortp' 'libusb-compat' 'sqlite>=3' 'boost-libs')
-makedepends=('autoconf' 'gcc' 'pkg-config' 'make' 'patch')
+depends=('libosip2' 'ortp' 'libusb-compat' 'sqlite>=3' 'boost-libs')
 optdepends=('asterisk: PBX support')
 source=(
     "http://downloads.sourceforge.net/project/openbts/${pkgver}/${pkgname}-P${pkgver}Opelousas.tar.gz"
