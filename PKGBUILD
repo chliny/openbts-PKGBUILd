@@ -20,8 +20,8 @@ sha512sums=(
 
 build() {
     cd "$srcdir/${pkgname}-P${pkgver}Opelousas"
+    autoreconf -i
     patch -p1 < ../../openbts.patch
-    autoconf -i
     ./configure
     make
     [ -f ./apps/OpenBTS.db ] && rm -f ./apps/OpenBTS.db
